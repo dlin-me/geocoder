@@ -28,7 +28,7 @@ With composer, add to your composer.json :
 ```
 {
     require: {
-        "dlin/geocoding": "dev-master"
+        "dlin/geocoder": "dev-master"
     }
 }
 ```
