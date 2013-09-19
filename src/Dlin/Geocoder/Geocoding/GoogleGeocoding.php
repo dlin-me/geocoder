@@ -1,10 +1,10 @@
 <?php
 /**
- * 
+ *
  * User: davidlin
  * Date: 11/09/13
  * Time: 10:25 PM
- * 
+ *
  */
 
 namespace Dlin\Geocoder\Geocoding;
@@ -134,7 +134,7 @@ class GoogleGeocoding implements IGeocoding{
         $resp = json_decode($resp_json, true);
 
 
-        if ($resp && $resp['status'] = 'OK') {
+        if ($resp && $resp['status'] == 'OK') {
 
             //get the first/best result
             $res = array_pop($resp['results']);
@@ -188,7 +188,7 @@ class GoogleGeocoding implements IGeocoding{
 
 
 
-        if ($resp && $resp['status'] = 'OK') {
+        if ($resp && $resp['status'] == 'OK') {
             $res = reset($resp['results']);
 
             $address = $this->_parseComponent($res['address_components']);
