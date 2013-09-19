@@ -35,7 +35,7 @@ class Geocoder
     public function __construct($sourceConfig)
     {
 
-        if (is_file($sourceConfig)) {
+        if (is_string($sourceConfig) && is_file($sourceConfig)) {
             $this->sourceConfig = parse_ini_file($sourceConfig, true);
         } else if (is_array($sourceConfig)) {
             $this->sourceConfig = $sourceConfig;
