@@ -3,7 +3,7 @@
     "description":"PHP Library for Google/Bing Geocoding",
     "keywords":["geocoding", "google", "bing", "webservice"],
     "license":"MIT",
-    "version": "0.9.1",
+    "version": "0.9.2",
     "authors":[
         {
             "name":"David Lin",

@@ -1,10 +1,10 @@
 <?php
 /**
- * 
+ *
  * User: davidlin
  * Date: 11/09/13
  * Time: 10:25 PM
- * 
+ *
  */
 
 namespace Dlin\Geocoder\Geocoding;
@@ -47,16 +47,27 @@ class BingGeocoding implements IGeocoding {
 
         $address = new GeoAddress();
         $address->geoCoding = $this->name;
-        $address->addressLine1 = $components['address']['addressLine'];
-        $address->state = $components['address']['adminDistrict'];
-        $address->country = $components['address']['countryRegion'];
-        $address->formattedAddress = $components['address']['formattedAddress'].', '.$address->country;
-        $address->suburb = $components['address']['locality'];
-        $address->postcode = $components['address']['postalCode'];
-        $address->partial = $components['confidence'] != 'High';
-        $address->latitude = strval($components['point']['coordinates'][0]);
-        $address->longitude = strval($components['point']['coordinates'][1]);
+        if(array_key_exists('address', $components)){
+            $addressData = $components['address'];
 
+            $address->addressLine1 = array_key_exists('addressLine', $addressData) ? $addressData['addressLine']: "";
+            $address->state = array_key_exists('adminDistrict', $addressData) ? $addressData['adminDistrict']: "";
+            $address->country = array_key_exists('countryRegion', $addressData) ? $addressData['countryRegion']: "";
+
+            if(array_key_exists('formattedAddress', $addressData)){
+                $address->formattedAddress = $addressData['formattedAddress'].', '.$address->country;
+            }
+
+            $address->suburb = array_key_exists('locality', $addressData) ? $addressData['locality']: "";
+            $address->postcode = array_key_exists('postalCode', $addressData) ? $addressData['postalCode']: "";
+        }
+        if(array_key_exists('confidence', $components)){
+            $address->partial = $components['confidence'] != 'High';
+        }
+        if(array_key_exists('point', $components)){
+            $address->latitude = strval($components['point']['coordinates'][0]);
+            $address->longitude = strval($components['point']['coordinates'][1]);
+        }
         return $address;
     }
 
