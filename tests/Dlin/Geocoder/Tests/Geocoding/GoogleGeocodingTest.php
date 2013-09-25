@@ -4,11 +4,11 @@ namespace Dlin\Geocoder\Tests\Geocoding;
 use Dlin\Geocoder\Geocoding\GoogleGeocoding;
 
 /**
- * 
+ *
  * User: davidlin
  * Date: 11/09/13
  * Time: 11:13 PM
- * 
+ *
  */
 
 class GoogleGeocodingTest extends \PHPUnit_Framework_TestCase
@@ -47,6 +47,10 @@ class GoogleGeocodingTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($address->partial);
         $this->assertEquals('5/48 Pirrama Road, Pyrmont NSW 2009, Australia', $address->formattedAddress);
 
+        $address = $this->geoCoding->forward('7489, Australia');
+        $this->assertNotEquals('Australia', $address->country);
+        $address = $this->geoCoding->forward('7489, Australia', 'AU');
+        $this->assertEquals('Australia', $address->country);
 
     }
 

@@ -77,6 +77,7 @@ class Geocoder
 
 
         $geocoding = null;
+
         switch(strtolower($config['vendor'])){
             case 'bing':
                 if(!isset($config['key'])){
@@ -97,9 +98,9 @@ class Geocoder
 
         $this->_callCounter++;
 
-
-
-        $geocoding->setName($configName);
+        if($geocoding){
+            $geocoding->setName($configName);
+        }
 
         return $geocoding;
 
@@ -112,22 +113,22 @@ class Geocoder
      * state, zip code, street address, or any combination of these.
      *
      * @param $address
+     * @param $countryCode, optional country code (e.g. AU) to improve the accuracy for Google
      * @return GeoAddress
      */
-    public function forward($address){
+    public function forward($address, $countryCode=null){
+
 
         $attempt = 0;
-        do{
-            $coding = $this->getGeocoding();
+        while(($coding = $this->getGeocoding()) && $attempt <= count($this->sourceConfig)){
+            if($address = $coding->forward($address, $countryCode)){
+                return $address;
+            }
             $attempt++;
-        }while($coding !== null & $attempt <= count($this->sourceConfig));
-
-        if($coding===null){
-            throw new \Exception('No valid Geocoding provider found');
         }
 
+        return null;
 
-        return $coding->forward($address);
 
     }
 
@@ -145,16 +146,20 @@ class Geocoder
     public function reverse($lat, $long)
     {
         $attempt = 0;
-        do{
-            $coding = $this->getGeocoding();
-            $attempt++;
-        }while($coding !== null & $attempt <= count($this->sourceConfig));
 
-        if($coding===null){
-            throw new \Exception('No valid Geocoding provider found');
+
+
+        while(($coding = $this->getGeocoding()) && $attempt <= count($this->sourceConfig)){
+
+
+            if($address = $coding->reverse($lat, $long)){
+                return $address;
+            }
+            $attempt++;
         }
 
-        return $coding->reverse($lat, $long);
+        return null;
+
     }
 
 

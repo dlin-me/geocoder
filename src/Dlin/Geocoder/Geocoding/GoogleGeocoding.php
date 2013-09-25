@@ -110,11 +110,15 @@ class GoogleGeocoding implements IGeocoding{
      * @param $address
      * @return GeoAddress
      */
-    public function forward($address)
+    public function forward($address, $countryCode=null)
     {
 
         $url = "http://maps.googleapis.com/maps/api/geocode/json?sensor=false&address=";
         $url = $url . urlencode($address);
+
+        if($countryCode){
+            $url.="&components=country:$countryCode";
+        }
 
 
 
