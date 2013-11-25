@@ -120,8 +120,6 @@ class GoogleGeocoding implements IGeocoding{
             $url.="&components=country:$countryCode";
         }
 
-
-
         if ($this->clientId && $this->privateKey) {
             $url .= '&client=' . $this->clientId;
             $url = $this->_signGoogleUrl($url, $this->privateKey);
@@ -142,8 +140,6 @@ class GoogleGeocoding implements IGeocoding{
 
             //get the first/best result
             $res = array_pop($resp['results']);
-
-
 
             $address = $this->_parseComponent($res['address_components']);
             $address->latitude = $res['geometry']['location']['lat'];

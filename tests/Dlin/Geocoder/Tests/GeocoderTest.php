@@ -16,7 +16,9 @@ class GeocoderTest extends \PHPUnit_Framework_TestCase
     public function testGeocoder()
     {
         $coder = new Geocoder(__DIR__."/config.ini");
-        $address = $coder->reverse("-33.86687", "151.19565");
+
+
+        $address = $coder->forward("7~11 Cozens Street, Wangaratta, VIC, 3676, Australia", "AU");
 
 
 

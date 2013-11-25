@@ -54,13 +54,34 @@ class Geocoder
 
     }
 
-    private $_callCounter = 0;
+    /**
+     * @var BingGeocoding|GoogleGeocoding
+     */
+    private $_currentGeocoding = null;
+
+    /**
+     * @return BingGeocoding|GoogleGeocoding
+     */
+    private function getCurrentGeocoding(){
+        if( $this->_currentGeocoding == null){
+            $this->_currentGeocoding  = $this->getNextGeocoding();
+        }
+        return $this->_currentGeocoding;
+    }
+
+    /**
+     * @param $coding
+     */
+    private function setCurrentGeocoding($coding){
+        $this->_currentGeocoding=$coding;
+    }
+
 
     /**
      * @return BingGeocoding|GoogleGeocoding
      * @throws \Exception
      */
-    private function getGeocoding(){
+    private function getNextGeocoding(){
 
         $keys = array_keys($this->sourceConfig);
 
@@ -68,12 +89,9 @@ class Geocoder
             throw new \Exception('No Geocoding source defined');
         }
 
-        $selectedIndex = $this->_callCounter%count($keys);
-
-        $configName = $keys[$selectedIndex];
+        $configName = $this->_currentGeocoding === null ? reset($keys): $keys[(array_search($this->_currentGeocoding->getName(), $keys)+1)%count($keys)];
 
         $config = $this->sourceConfig[$configName];
-
 
 
         $geocoding = null;
@@ -96,16 +114,17 @@ class Geocoder
 
         }
 
-        $this->_callCounter++;
 
         if($geocoding){
             $geocoding->setName($configName);
         }
 
-        return $geocoding;
-
+        return  $geocoding;
 
     }
+
+
+
 
     /**
      * Forward Geocoding is the process of taking a given location in address format and returning the
@@ -117,19 +136,18 @@ class Geocoder
      * @return GeoAddress
      */
     public function forward($address, $countryCode=null){
-
-
         $attempt = 0;
-        while(($coding = $this->getGeocoding()) && $attempt <= count($this->sourceConfig)){
-            if($address = $coding->forward($address, $countryCode)){
-                return $address;
+
+
+        while( $this->getCurrentGeocoding() && $attempt <= count($this->sourceConfig)){
+            if($parsedAddress =  $this->getCurrentGeocoding()->forward($address, $countryCode)){
+                return $parsedAddress;
+            }else{
+                $this->setCurrentGeocoding($this->getNextGeocoding());
             }
             $attempt++;
         }
-
         return null;
-
-
     }
 
 
@@ -149,11 +167,13 @@ class Geocoder
 
 
 
-        while(($coding = $this->getGeocoding()) && $attempt <= count($this->sourceConfig)){
+        while((  $this->getCurrentGeocoding()) && $attempt <= count($this->sourceConfig)){
 
 
-            if($address = $coding->reverse($lat, $long)){
+            if($address =  $this->getCurrentGeocoding()->reverse($lat, $long)){
                 return $address;
+            }else{
+                $this->setCurrentGeocoding($this->getNextGeocoding());
             }
             $attempt++;
         }
