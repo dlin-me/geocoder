@@ -98,7 +98,9 @@ Dlin\Geocoder\GeoAddress Object
 ```
 
 
-Most of the fields are self-explanatory, the *partial* field indicates if the finding is an approximate (alway false for *reverse* method ), the *geoCoding* field shows the Google/Bing account used.
+Most of the fields are self-explanatory, the *partial* field indicates if the finding is an approximate (alway false for *reverse* method ), the *geoCoding* field shows the Google/Bing account used. 
+
+If a address is not resolved (e.g. invalid addresss), the returned value will be `null`.
 
 
 ## 4. Configuration
